@@ -58,7 +58,6 @@ export default {
           if (res.data.success) {
             const { token, expired } = res.data;
             document.cookie = `hexToken=${token}; expires=${new Date(expired)}`;
-            // eslint-disable-next-line prefer-template, space-infix-ops
             console.log(res);
             this.$router.push('/dashboard');
           } else {
