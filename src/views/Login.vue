@@ -55,9 +55,15 @@ export default {
       const api = `${process.env.VUE_APP_API}admin/signin`;
       this.$http.post(api, this.user)
         .then((res) => {
-          const { token, expired } = res.data;
-          document.cookie = `hexToken=${token}; expires=${new Date(expired)}`;
-          console.log(res);
+          if (res.data.success) {
+            const { token, expired } = res.data;
+            document.cookie = `hexToken=${token}; expires=${new Date(expired)}`;
+            // eslint-disable-next-line prefer-template, space-infix-ops
+            console.log(res);
+            this.$router.push('/dashboard');
+          } else {
+            console.log('登入失敗，帳號或密碼有錯誤');
+          }
         });
     },
   },
