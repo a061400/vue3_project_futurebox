@@ -32,7 +32,7 @@
       </td>
       <td>
         <div class="btn-group">
-          <button class="btn btn-outline-primary btn-sm">編輯</button>
+          <button class="btn btn-outline-primary btn-sm" @click="editModal(item)">編輯</button>
           <button class="btn btn-outline-danger btn-sm">刪除</button>
         </div>
       </td>
@@ -67,22 +67,42 @@ export default {
           }
         });
     },
-    openModal() {
-      this.tempProduct = {};
+    openModal(data = {}) {
+      this.tempProduct = data;
       const productComponent = this.$refs.productModal;
       productComponent.showModal();
     },
     updateProduct(item) {
+      // 新增商品
+      let api = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/admin/product`;
+      let httpMethod = 'post';
+
+      // 編輯商品
+      this.products.forEach((data) => {
+        if (data.id === item.id) {
+          api = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/admin/product/${item.id}`;
+          httpMethod = 'put';
+        }
+      });
+
       this.tempProduct = item;
-      const api = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/admin/product`;
       const productComponent = this.$refs.productModal;
-      this.$http.post(api, { data: this.tempProduct }).then(
+      this.$http[httpMethod](api, { data: this.tempProduct }).then(
         (response) => {
           console.log(response);
           productComponent.hideModal();
           this.getProducts();
         },
       );
+    },
+    editModal(data) {
+      // this.products.forEach((data) => {
+      // if (data.id === curID) {
+      //   console.log(data);
+      //   this.openModal(data);
+      // }
+      // });
+      this.openModal(data);
     },
   },
   created() {
