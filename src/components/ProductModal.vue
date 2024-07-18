@@ -26,7 +26,8 @@
             <label for="customFile" class="form-label">或 上傳圖片
               <i class="fas fa-spinner fa-spin"></i>
             </label>
-            <input type="file" id="customFile" class="form-control">
+            <input type="file" id="customFile" class="form-control"
+             @change="uploadFile" ref="fileInput">
           </div>
           <img class="img-fluid" alt="">
           <!-- 延伸技巧，多圖 -->
@@ -142,6 +143,23 @@ export default {
     },
     hideModal() {
       this.modal.hide();
+    },
+    uploadFile() {
+      // 取得圖片資源
+      const uploadedFile = this.$refs.fileInput.files[0];
+
+      // 包裝成formData
+      const formData = new FormData();
+      formData.append('file-to-upload', uploadedFile);
+
+      // 透過http傳送給遠端資料庫
+      const api = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/admin/upload`;
+      this.$http.post(api, formData).then((res) => {
+        if (res.data.success) {
+          this.tempProduct.imageUrl = res.data.imageUrl;
+          console.log('上傳圖片成功');
+        }
+      });
     },
   },
   mounted() {
