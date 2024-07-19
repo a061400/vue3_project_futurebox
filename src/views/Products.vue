@@ -1,7 +1,8 @@
 <template>
+
 <div class="text-end">
   <button class="btn btn-primary" type="button"
-  @click="openModal">
+  @click="openEditModal">
   新增一個產品
   </button>
 </div>
@@ -32,8 +33,8 @@
       </td>
       <td>
         <div class="btn-group">
-          <button class="btn btn-outline-primary btn-sm" @click="editModal(item)">編輯</button>
-          <button class="btn btn-outline-danger btn-sm">刪除</button>
+          <button class="btn btn-outline-primary btn-sm" @click="openEditModal(item)">編輯</button>
+          <button class="btn btn-outline-danger btn-sm" @click="openDeleteModal(item)">刪除</button>
         </div>
       </td>
     </tr>
@@ -41,10 +42,12 @@
 </table>
 <ProductModal ref="productModal" :product="tempProduct"
 @update-product="updateProduct"></ProductModal>
+<DelModal :item="tempProduct" ref="delModal" @del-item="checkDeleteItem"></DelModal>
 </template>
 
 <script>
 import ProductModal from '@/components/ProductModal.vue';
+import DelModal from '@/components/DelModal.vue';
 
 export default {
   data() {
@@ -52,7 +55,20 @@ export default {
       products: [],
       pagination: {},
       tempProduct: {},
+      productComponent: {},
+      delModalComponent: {},
     };
+  },
+  created() {
+    this.getProducts();
+  },
+  mounted() {
+    this.productComponent = this.$refs.productModal;
+    this.delModalComponent = this.$refs.delModal;
+  },
+  components: {
+    ProductModal,
+    DelModal,
   },
   methods: {
     getProducts() {
@@ -67,10 +83,9 @@ export default {
           }
         });
     },
-    openModal(data = {}) {
-      this.tempProduct = data;
-      const productComponent = this.$refs.productModal;
-      productComponent.showModal();
+    openEditModal(item = {}) {
+      this.tempProduct = item;
+      this.productComponent.showModal();
     },
     updateProduct(item) {
       // 新增商品
@@ -86,30 +101,29 @@ export default {
       });
 
       this.tempProduct = item;
-      const productComponent = this.$refs.productModal;
       this.$http[httpMethod](api, { data: this.tempProduct }).then(
         (response) => {
           console.log(response);
-          productComponent.hideModal();
+          this.productComponent.hideModal();
           this.getProducts();
         },
       );
     },
-    editModal(data) {
-      // this.products.forEach((data) => {
-      // if (data.id === curID) {
-      //   console.log(data);
-      //   this.openModal(data);
-      // }
-      // });
-      this.openModal(data);
+    openDeleteModal(item) {
+      this.tempProduct = item;
+      console.log(this.tempProduct);
+      this.delModalComponent.showModal();
     },
-  },
-  created() {
-    this.getProducts();
-  },
-  components: {
-    ProductModal,
+    checkDeleteItem() {
+      const api = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/admin/product/${this.tempProduct.id}`;
+      this.$http.delete(api).then(
+        (response) => {
+          console.log(response);
+          this.delModalComponent.hideModal();
+          this.getProducts();
+        },
+      );
+    },
   },
 };
 </script>
