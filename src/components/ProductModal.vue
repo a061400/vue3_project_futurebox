@@ -117,7 +117,7 @@
 </template>
 
 <script>
-import Modal from 'bootstrap/js/dist/modal';
+import modalMixin from '@/mixins/modalMixin';
 
 export default {
   data() {
@@ -137,13 +137,10 @@ export default {
       this.tempProduct = this.product;
     },
   },
+  mixins: [
+    modalMixin,
+  ],
   methods: {
-    showModal() {
-      this.modal.show();
-    },
-    hideModal() {
-      this.modal.hide();
-    },
     uploadFile() {
       // 取得圖片資源
       const uploadedFile = this.$refs.fileInput.files[0];
@@ -162,9 +159,5 @@ export default {
       });
     },
   },
-  mounted() {
-    this.modal = new Modal(this.$refs.modal);
-  },
-
 };
 </script>
