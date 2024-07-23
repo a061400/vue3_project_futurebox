@@ -60,6 +60,7 @@ export default {
       isLoading: false,
     };
   },
+  inject: ['emitter'],
   created() {
     this.getProducts();
   },
@@ -106,9 +107,22 @@ export default {
       this.tempProduct = item;
       this.$http[httpMethod](api, { data: this.tempProduct }).then(
         (response) => {
+          console.log('按下新增或編輯');
           console.log(response);
           this.productComponent.hideModal();
-          this.getProducts();
+          if (response.data.success) {
+            this.emitter.emit('push-message', {
+              style: 'success',
+              title: '更新成功',
+            });
+            this.getProducts();
+          } else {
+            this.emitter.emit('push-message', {
+              style: 'danger',
+              title: '更新失敗',
+              content: response.data.message.join(','),
+            });
+          }
         },
       );
     },
