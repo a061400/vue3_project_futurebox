@@ -40,6 +40,7 @@
     </tr>
   </tbody>
 </table>
+<Pagination :pages="pagination" @update-page="getProducts"></Pagination>
 <ProductModal ref="productModal" :product="tempProduct"
 @update-product="updateProduct"></ProductModal>
 <DelModal :item="tempProduct" ref="delModal" @del-item="checkDeleteItem"></DelModal>
@@ -48,6 +49,7 @@
 <script>
 import ProductModal from '@/components/ProductModal.vue';
 import DelModal from '@/components/DelModal.vue';
+import Pagination from '@/components/Pagination.vue';
 
 export default {
   data() {
@@ -71,15 +73,18 @@ export default {
   components: {
     ProductModal,
     DelModal,
+    Pagination,
   },
   methods: {
-    getProducts() {
+    getProducts(page = 1) {
       this.isLoading = true;
-      const api = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/admin/products`;
+      const api = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/admin/products?page=${page}`;
       this.$http.get(api)
         .then((res) => {
           this.isLoading = false;
+          console.log(res);
           if (res.data.success) {
+            console.log('取得商品列表成功');
             this.products = res.data.products;
             this.pagination = res.data.pagination;
           } else {

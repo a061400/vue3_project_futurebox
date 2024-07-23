@@ -26,11 +26,12 @@ export default {
     this.$http.defaults.headers.common.Authorization = token;
     const api = `${process.env.VUE_APP_API}api/user/check`;
     this.$http.post(api, this.user).then((res) => {
-      if (!res.data.success) {
+      if (res.data.success) {
+        console.log('登入成功');
+      } else {
         this.$router.push('/login');
         console.log('驗證錯誤(cookie失效)，請重新登入');
       }
-      console.log(res);
     });
   },
   // 讓所有內層元件皆可以使用
