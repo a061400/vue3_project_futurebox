@@ -1,4 +1,7 @@
 <template>
+  <div class="container-fluid mt-3 position-relative">
+  <h1 style="color: orange; background-color: lightyellow">未來盒子 TheFutureBox</h1>
+  </div>
   <Navbar></Navbar>
   <div class="container-fluid">
     <div class="container-fluid mt-3 position-relative">
