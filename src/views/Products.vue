@@ -100,12 +100,14 @@ export default {
       // 新增商品
       let api = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/admin/product`;
       let httpMethod = 'post';
+      let title = '新增';
 
       // 編輯商品
       this.products.forEach((data) => {
         if (data.id === item.id) {
           api = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/admin/product/${item.id}`;
           httpMethod = 'put';
+          title = '編輯';
         }
       });
 
@@ -115,19 +117,8 @@ export default {
           console.log('按下新增或編輯');
           console.log(response);
           this.productComponent.hideModal();
-          if (response.data.success) {
-            this.emitter.emit('push-message', {
-              style: 'success',
-              title: '更新成功',
-            });
-            this.getProducts();
-          } else {
-            this.emitter.emit('push-message', {
-              style: 'danger',
-              title: '更新失敗',
-              content: response.data.message.join(','),
-            });
-          }
+          this.$httpMessageState(response, title);
+          this.getProducts();
         },
       );
     },
