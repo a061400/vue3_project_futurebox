@@ -3,7 +3,7 @@ import axios from 'axios';
 import VueAxios from 'vue-axios';
 import Loading from 'vue-loading-overlay';
 import 'vue-loading-overlay/dist/css/index.css';
-import { currency } from './methods/filter';
+import { currency, date } from './methods/filter';
 
 import App from './App.vue';
 import router from './router';
@@ -13,6 +13,7 @@ app.use(VueAxios, axios);
 app.component('Loading', Loading);
 app.config.globalProperties.$filters = {
   currency,
+  date,
 };
 
 app.use(router);

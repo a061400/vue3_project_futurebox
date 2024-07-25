@@ -93,7 +93,7 @@ export default {
         });
     },
     openEditModal(item = {}) {
-      this.tempProduct = item;
+      this.tempProduct = { ...item };
       this.productComponent.showModal();
     },
     updateProduct(item) {
@@ -132,7 +132,7 @@ export default {
       );
     },
     openDeleteModal(item) {
-      this.tempProduct = item;
+      this.tempProduct = { ...item };
       console.log(this.tempProduct);
       this.delModalComponent.showModal();
     },

@@ -2,7 +2,7 @@
 <Loading :active="isLoading"></Loading>
 <div class="text-end">
   <button class="btn btn-primary" type="button"
-  @click="openEditModal">
+  @click="openEditModal('')">
   新增優惠券
   </button>
 </div>
@@ -17,13 +17,13 @@
     </tr>
   </thead>
   <tbody>
-    <tr v-for="item in products" :key="item.id">
-      <td>{{item.category}}</td>
+    <tr v-for="item in coupons" :key="item.id">
+      <td>{{item.title}}</td>
       <td class="text-right">
-        {{ $filters.currency(item.origin_price) }}
+        {{ item.percent }}%
       </td>
       <td class="text-right">
-        {{ $filters.currency(item.price) }}
+        {{ $filters.date(item.due_date) }}
       </td>
       <td>
         <span class="text-success" v-if="item.is_enabled">啟用</span>
@@ -38,87 +38,97 @@
     </tr>
   </tbody>
 </table>
-<Pagination :pages="pagination" @update-page="getProducts"></Pagination>
-<ProductModal ref="productModal" :product="tempProduct"
-@update-product="updateProduct"></ProductModal>
-<DelModal :item="tempProduct" ref="delModal" @del-item="checkDeleteItem"></DelModal>
+<Pagination :pages="pagination" @update-page="getCoupons"></Pagination>
+<CouponModal ref="couponModal" :coupon="tempCoupons"
+@update-coupons="updateCoupons"></CouponModal>
+<DelModal :item="tempCoupons" ref="delModal" @del-item="checkDeleteItem"></DelModal>
 </template>
 
 <script>
-import ProductModal from '@/components/ProductModal.vue';
+import CouponModal from '@/components/CouponModal.vue';
 import DelModal from '@/components/DelModal.vue';
 import Pagination from '@/components/Pagination.vue';
 
 export default {
   data() {
     return {
-      products: [],
+      coupons: [],
       pagination: {},
-      tempProduct: {},
-      productComponent: {},
+      tempCoupons: {
+      },
+      couponComponent: {},
       delModalComponent: {},
       isLoading: false,
     };
   },
   inject: ['emitter'],
   created() {
-    this.getProducts();
+    this.getCoupons();
   },
   mounted() {
-    this.productComponent = this.$refs.productModal;
+    this.couponComponent = this.$refs.couponModal;
     this.delModalComponent = this.$refs.delModal;
   },
   components: {
-    ProductModal,
+    CouponModal,
     DelModal,
     Pagination,
   },
   methods: {
-    getProducts(page = 1) {
+    getCoupons(page = 1) {
       this.isLoading = true;
-      const api = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/admin/products?page=${page}`;
+      const api = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/admin/coupons?page=${page}`;
       this.$http.get(api)
         .then((res) => {
           this.isLoading = false;
           console.log(res);
           if (res.data.success) {
-            console.log('取得商品列表成功');
-            this.products = res.data.products;
+            console.log('取得優惠券列表成功');
+            this.coupons = res.data.coupons;
             this.pagination = res.data.pagination;
+            console.log(this.pagination);
           } else {
-            console.log('取得商品列表失敗');
+            console.log('取得優惠券列表失敗');
           }
         });
     },
-    openEditModal(item = {}) {
-      this.tempProduct = item;
-      this.productComponent.showModal();
+    openEditModal(item) {
+      if (item === '') {
+        this.tempCoupons = {
+          due_date: new Date().getTime() / 1000,
+          is_enabled: 0,
+        };
+      } else {
+        this.tempCoupons = { ...item };
+      }
+
+      this.couponComponent.showModal();
     },
-    updateProduct(item) {
+    updateCoupons(item) {
       // 新增商品
-      let api = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/admin/product`;
+      let api = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/admin/coupon`;
       let httpMethod = 'post';
 
       // 編輯商品
-      this.products.forEach((data) => {
+      this.coupons.forEach((data) => {
         if (data.id === item.id) {
-          api = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/admin/product/${item.id}`;
+          api = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/admin/coupon/${item.id}`;
           httpMethod = 'put';
         }
       });
 
-      this.tempProduct = item;
-      this.$http[httpMethod](api, { data: this.tempProduct }).then(
+      this.tempCoupons = item;
+      this.$http[httpMethod](api, { data: this.tempCoupons }).then(
         (response) => {
           console.log('按下新增或編輯');
           console.log(response);
-          this.productComponent.hideModal();
+          this.couponComponent.hideModal();
           if (response.data.success) {
             this.emitter.emit('push-message', {
               style: 'success',
               title: '更新成功',
             });
-            this.getProducts();
+            this.getCoupons();
           } else {
             this.emitter.emit('push-message', {
               style: 'danger',
@@ -130,17 +140,16 @@ export default {
       );
     },
     openDeleteModal(item) {
-      this.tempProduct = item;
-      console.log(this.tempProduct);
+      this.tempCoupons = { ...item };
       this.delModalComponent.showModal();
     },
     checkDeleteItem() {
-      const api = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/admin/product/${this.tempProduct.id}`;
+      const api = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/admin/coupon/${this.tempCoupons.id}`;
       this.$http.delete(api).then(
         (response) => {
           console.log(response);
           this.delModalComponent.hideModal();
-          this.getProducts();
+          this.getCoupons();
         },
       );
     },
