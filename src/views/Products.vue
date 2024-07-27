@@ -114,8 +114,7 @@ export default {
       this.tempProduct = item;
       this.$http[httpMethod](api, { data: this.tempProduct }).then(
         (response) => {
-          console.log('按下新增或編輯');
-          console.log(response);
+          console.log('按下新增或編輯', response);
           this.productComponent.hideModal();
           this.$httpMessageState(response, title);
           this.getProducts();

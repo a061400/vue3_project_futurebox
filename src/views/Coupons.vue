@@ -83,10 +83,9 @@ export default {
           this.isLoading = false;
           console.log(res);
           if (res.data.success) {
-            console.log('取得優惠券列表成功');
             this.coupons = res.data.coupons;
             this.pagination = res.data.pagination;
-            console.log(this.pagination);
+            console.log('取得優惠券列表成功', this.pagination);
           } else {
             console.log('取得優惠券列表失敗');
           }
@@ -123,8 +122,7 @@ export default {
       this.$http[httpMethod](api, { data: this.tempCoupons }).then(
         (response) => {
           this.$httpMessageState(response, title);
-          console.log('按下新增或編輯');
-          console.log(response);
+          console.log('按下新增或編輯', response);
           this.couponComponent.hideModal();
           this.getCoupons();
         },
