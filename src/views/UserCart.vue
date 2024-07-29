@@ -77,7 +77,7 @@
               <tr>
                 <th></th>
                 <th>品名</th>
-                <th style="width: 110px">數量</th>
+                <th style="width: 120px">數量</th>
                 <th>單價</th>
               </tr>
             </thead>
@@ -100,7 +100,9 @@
                 <td>
                   <div class="input-group input-group-sm">
                     <input type="number" class="form-control"
-                          v-model.number="item.qty">
+                          v-model.number="item.qty" min="1"
+                          @change="updateCart(item)"
+                          :disabled="this.status.loadingItem === item.id">
                     <div class="input-group-text">/ {{ item.product.unit }}</div>
                   </div>
                 </td>
@@ -189,10 +191,26 @@ export default {
       const api = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/cart`;
       this.$http.get(api).then((res) => {
         if (res.data.success) {
-          console.log('取得購物車成功', res.data.data);
+          console.log('取得購物車資訊成功', res.data.data);
           this.cart = res.data.data;
         } else {
-          console.log('取得購物車失敗');
+          console.log('取得購物車資訊失敗');
+        }
+      });
+    },
+    updateCart(item) {
+      const api = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/cart/${item.id}`;
+      const cart = {
+        product_id: item.product_id,
+        qty: item.qty,
+      };
+      this.status.loadingItem = item.id;
+      this.$http.put(api, { data: cart }).then((res) => {
+        if (res.data.success) {
+          console.log('更新購物車資訊成功', res);
+          this.getCarts();
+        } else {
+          console.log('更新購物車資訊失敗');
         }
         this.status.loadingItem = '';
       });
