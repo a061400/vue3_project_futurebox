@@ -181,6 +181,7 @@ export default {
       this.$http.post(api, { data: cart }).then((res) => {
         if (res.data.success) {
           console.log('加入購物車成功', res.data.data);
+          this.getCarts();
         } else {
           console.log('加入購物車失敗');
         }
@@ -215,8 +216,18 @@ export default {
         this.status.loadingItem = '';
       });
     },
-    removeCartItem() {
-
+    removeCartItem(itemId) {
+      const api = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/cart/${itemId}`;
+      this.status.loadingItem = itemId;
+      this.$http.delete(api).then((res) => {
+        if (res.data.success) {
+          console.log('刪除產品成功');
+          this.getCarts();
+        } else {
+          console.log('刪除產品失敗');
+        }
+        this.status.loadingItem = '';
+      });
     },
     addCouponCode() {
 
