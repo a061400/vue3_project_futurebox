@@ -88,7 +88,7 @@
                   <button type="button" class="btn btn-outline-danger btn-sm"
                           :disabled="status.loadingItem === item.id"
                           @click="removeCartItem(item.id)">
-                    <i class="bi bi-x"></i>
+                    <i class="bi bi-trash"></i>
                   </button>
                 </td>
                 <td>

@@ -5,6 +5,7 @@ import Loading from 'vue-loading-overlay';
 import 'vue-loading-overlay/dist/css/index.css';
 import { currency, date } from './methods/filter';
 import $httpMessageState from './methods/pushMessageState';
+import 'bootstrap-icons/font/bootstrap-icons.css';
 
 import App from './App.vue';
 import router from './router';
