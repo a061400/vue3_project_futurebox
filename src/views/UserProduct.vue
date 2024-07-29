@@ -34,6 +34,9 @@ export default {
     return {
       product: {},
       id: '',
+      status: {
+        loadingItem: '',
+      },
     };
   },
   created() {
@@ -54,8 +57,21 @@ export default {
         this.isLoading = false;
       });
     },
-    addToCart() {
-
+    addToCart(itemId) {
+      const api = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/cart`;
+      const cart = {
+        product_id: itemId,
+        qty: 1,
+      };
+      this.status.loadingItem = itemId;
+      this.$http.post(api, { data: cart }).then((res) => {
+        if (res.data.success) {
+          console.log('獨立商品 加入購物車成功', res.data.data);
+        } else {
+          console.log('獨立商品 加入購物車失敗');
+        }
+        this.status.loadingItem = '';
+      });
     },
   },
 };
