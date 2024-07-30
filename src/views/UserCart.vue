@@ -106,29 +106,42 @@
                     <div class="input-group-text">/ {{ item.product.unit }}</div>
                   </div>
                 </td>
-                <td class="text-end">
-                  <small v-if="cart.final_total !== cart.total" class="text-success">折扣價：</small>
-                  {{ $filters.currency(item.final_total) }}
+                <td class="">
+                  <div class="">原價：{{ $filters.currency(item.total) }}</div>
+                  <div v-if="cart.final_total !== cart.total" class="text-success">
+                    折扣： {{ $filters.currency(item.final_total) }}
+                  </div>
                 </td>
               </tr>
             </template>
             </tbody>
             <tfoot>
             <tr>
-              <td colspan="3" class="text-end">總計</td>
+              <td colspan="3" class="text-end">原價總計：</td>
               <td class="text-end">{{ $filters.currency(cart.total) }}</td>
             </tr>
             <tr v-if="cart.final_total !== cart.total">
-              <td colspan="3" class="text-end text-success">折扣價</td>
+              <td colspan="3" class="text-end text-success">折扣總計：</td>
               <td class="text-end text-success">{{ $filters.currency(cart.final_total) }}</td>
+            </tr>
+            <tr v-if="cart.final_total !== cart.total">
+              <td colspan="3" class="text-end text-success">最終結帳金額：</td>
+              <td class="text-end text-success">
+                {{ $filters.currency(cart.total - cart.final_total) }}
+              </td>
             </tr>
             </tfoot>
           </table>
           <div class="input-group mb-3 input-group-sm">
             <input type="text" class="form-control" v-model="coupon_code" placeholder="請輸入優惠碼">
             <div class="input-group-append">
-              <button class="btn btn-outline-secondary" type="button" @click="addCouponCode">
+              <button class="btn btn-outline-secondary" type="button" @click="addCouponCode"
+              :disabled="this.status.loadingItem === 'on'">
                 套用優惠碼
+              </button>
+              <button class="btn btn-outline-secondary" type="button" @click="cancelCouponCode"
+              :disabled="this.status.loadingItem === 'on'">
+                取消優惠碼
               </button>
             </div>
           </div>
@@ -230,7 +243,23 @@ export default {
       });
     },
     addCouponCode() {
-
+      const api = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/coupon`;
+      const coupon = {
+        code: this.coupon_code,
+      };
+      this.status.loadingItem = 'on';
+      this.$http.post(api, { data: coupon }).then((res) => {
+        if (res.data.success) {
+          console.log('加入優惠券成功');
+          this.getCarts();
+        } else {
+          console.log('加入優惠券失敗');
+        }
+        this.status.loadingItem = '';
+      });
+    },
+    cancelCouponCode() {
+      console.log('功能尚未開啟');
     },
   },
 };

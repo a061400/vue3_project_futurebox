@@ -10,6 +10,7 @@
   <thead>
     <tr>
       <th width="80">優惠券名稱</th>
+      <th width="80">優惠碼</th>
       <th width="80">折扣</th>
       <th width="80">到期日</th>
       <th width="80">是否啟用</th>
@@ -19,6 +20,7 @@
   <tbody>
     <tr v-for="item in coupons" :key="item.id">
       <td>{{item.title}}</td>
+      <td>{{item.code}}</td>
       <td class="text-right">
         {{ item.percent }}%
       </td>

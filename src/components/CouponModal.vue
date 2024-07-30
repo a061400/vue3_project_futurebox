@@ -38,7 +38,7 @@
                       placeholder="請輸入到期日" v-model="due_date">
             </div>
             <div class="mb-3 col-md-6">
-              <label for="price" class="form-label">編號</label>
+              <label for="price" class="form-label">優惠碼</label>
               <input type="text" class="form-control" id="price"
                       placeholder="請輸入編號" v-model="tempCoupons.code">
             </div>
