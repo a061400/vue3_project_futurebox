@@ -1,3 +1,4 @@
+<!-- eslint-disable vuejs-accessibility/label-has-for -->
 <!-- eslint-disable vuejs-accessibility/form-control-has-label -->
 <template>
   <Loading :active="isLoading"></Loading>
@@ -69,7 +70,7 @@
           </tbody>
         </table>
       </div>
-      <!-- 購物車列表 -->
+      <!------------------------------ 購物車列表 ------------------------------>
        <div class="col-md-5">
         <div class="sticky-top">
           <table class="table align-middle">
@@ -147,6 +148,54 @@
           </div>
         </div>
       </div>
+      <!------------------------------ 建立訂單 ------------------------------>
+<div class="my-5 row justify-content-center">
+  <Form class="col-md-6" v-slot="{ errors }" @submit="createOrder">
+    <div class="mb-3">
+          <label for="email" class="form-label">Email</label>
+          <Field id="email" name="email" type="email" class="form-control"
+                   :class="{ 'is-invalid': errors['email'] }"
+                   placeholder="請輸入 Email" rules="email|required"
+                   ></Field>
+          <ErrorMessage name="email" class="invalid-feedback"></ErrorMessage>
+    </div>
+    <div class="mb-3">
+          <label for="name" class="form-label">收件人姓名</label>
+          <Field id="name" name="姓名" type="text" class="form-control"
+                   :class="{ 'is-invalid': errors['姓名'] }"
+                   placeholder="請輸入姓名" rules="required"
+                   ></Field>
+          <ErrorMessage name="姓名" class="invalid-feedback"></ErrorMessage>
+        </div>
+
+        <div class="mb-3">
+          <label for="tel" class="form-label">收件人電話</label>
+          <Field id="tel" name="電話" type="tel" class="form-control"
+                   :class="{ 'is-invalid': errors['電話'] }"
+                   placeholder="請輸入電話" rules="required"
+                   ></Field>
+          <ErrorMessage name="電話" class="invalid-feedback"></ErrorMessage>
+        </div>
+
+        <div class="mb-3">
+          <label for="address" class="form-label">收件人地址</label>
+          <Field id="address" name="地址" type="text" class="form-control"
+                   :class="{ 'is-invalid': errors['地址'] }"
+                   placeholder="請輸入地址" rules="required"
+                  ></Field>
+          <ErrorMessage name="地址" class="invalid-feedback"></ErrorMessage>
+        </div>
+
+        <div class="mb-3">
+          <label for="message" class="form-label">留言</label>
+          <textarea name="" id="message" class="form-control" cols="30" rows="10"
+                    ></textarea>
+        </div>
+        <div class="text-end">
+          <button class="btn btn-danger" :disabled="this.status.loadingItem === 'on'">送出訂單</button>
+        </div>
+  </Form>
+</div>
     </div>
   </div>
 </template>
@@ -260,6 +309,32 @@ export default {
     },
     cancelCouponCode() {
       console.log('功能尚未開啟');
+    },
+
+    createOrder() {
+      const api = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/order`;
+      const form = {
+        user: {
+          name: 'test',
+          email: 'test@gmail.com',
+          tel: '0912346768',
+          address: 'taichung',
+        },
+        message: '這是留言',
+      };
+      this.status.loadingItem = 'on';
+      this.isLoading = true;
+      this.$http.post(api, { data: form }).then((res) => {
+        console.log(res);
+        if (res.data.success) {
+          console.log('建立訂單成功');
+          this.getCarts();
+        } else {
+          console.log('建立訂單失敗');
+        }
+        this.status.loadingItem = '';
+        this.isLoading = false;
+      });
     },
   },
 };
