@@ -10,8 +10,20 @@
     </div>
   </nav>
   <div class="container-fluid mt-3 position-relative">
-    <ToastMessage></ToastMessage>
     <router-view />
+  </div>
+  <div style="
+  position: fixed; /* 固定在屏幕上 */
+  top: 50%; /* 垂直居中 */
+  left: 50%; /* 水平居中 */
+  transform: translate(-50%, -50%); /* 將元素移到中心 */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000; /* 確保在其他元素之上 */
+  min-width: 500px; /* 最小寬度 */
+   ">
+  <ToastMessage></ToastMessage>
   </div>
 </template>
 

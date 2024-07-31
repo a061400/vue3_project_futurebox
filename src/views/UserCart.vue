@@ -331,7 +331,7 @@ export default {
       this.status.loadingItem = 'on';
       this.isLoading = true;
       this.$http.post(api, { data: form }).then((res) => {
-        console.log(res);
+        this.$httpMessageState(res, '建立訂單');
         if (res.data.success) {
           console.log('建立訂單成功');
           this.getCarts();
