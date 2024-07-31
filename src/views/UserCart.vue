@@ -133,10 +133,15 @@
             </tr>
             </tfoot>
           </table>
+          <Form class="col-md-6" v-slot="{ errors }" @submit="addCouponCode">
           <div class="input-group mb-3 input-group-sm">
-            <input type="text" class="form-control" v-model="coupon_code" placeholder="請輸入優惠碼">
+            <Field id="coupon" name="優惠碼" type="text" class="form-control"
+                   :class="{ 'is-invalid': errors['優惠碼'] }" v-model="coupon_code"
+                   placeholder="請輸入優惠碼" rules="required"
+                  ></Field>
+            <ErrorMessage name="優惠碼" class="invalid-feedback"></ErrorMessage>
             <div class="input-group-append">
-              <button class="btn btn-outline-secondary" type="button" @click="addCouponCode"
+              <button class="btn btn-outline-secondary"
               :disabled="this.status.loadingItem === 'on'">
                 套用優惠碼
               </button>
@@ -146,6 +151,7 @@
               </button>
             </div>
           </div>
+          </Form>
         </div>
       </div>
       <!------------------------------ 建立訂單 ------------------------------>
