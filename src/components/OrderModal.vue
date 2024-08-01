@@ -81,13 +81,16 @@
                 <tbody>
                   <tr v-for="item in tempOrder.products" :key="item.id">
                     <th>
-                      {{ item.title }}
+                      {{ item.product.title }}
                     </th>
                     <td>
-                      數量:{{ item.qty }}
+                      數量: {{ item.qty }} {{ item.product.unit }}
                     </td>
-                    <td class="text-end">
-                      {{ $filters.currency(tempOrder.total) }}
+                    <td class="">
+                      單價: {{ $filters.currency(item.product.price) }}
+                    </td>
+                    <td class="">
+                      總計: {{ $filters.currency(item.final_total) }}
                     </td>
                   </tr>
                 </tbody>

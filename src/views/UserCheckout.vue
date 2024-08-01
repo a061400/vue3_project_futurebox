@@ -6,6 +6,7 @@
       <th class="text-center">品名</th>
       <th class="text-center">數量</th>
       <th class="text-center">單價</th>
+      <th class="text-center">折扣</th>
       <th class="text-center">總價</th>
       </thead>
       <tbody>
@@ -14,7 +15,10 @@
         <td class="text-center">{{item.qty}} /
           {{item.product.unit}}</td>
         <td class="text-center">{{ $filters.currency(item.product.price)}}</td>
-        <td class="text-center">{{ $filters.currency(item.final_total)}}</td>
+        <td class="text-center">
+          {{ $filters.currency(item.final_total)}}
+        </td>
+        <td class="text-center">{{ $filters.currency(item.total - item.final_total)}}</td>
       </tr>
       </tbody>
       <tfoot>

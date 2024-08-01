@@ -21,7 +21,7 @@
           <td>
             <ul class="list-unstyled">
               <li v-for="(product, i) in item.products" :key="i">
-                {{ product.title }} 數量：{{ product.qty }}
+                {{ product.product.title }}：{{ product.qty }} {{ product.product.unit }}
               </li>
             </ul>
           </td>
@@ -64,8 +64,37 @@ export default {
   data() {
     return {
       products: [
+        {
+          create_at: '',
+          id: '-',
+          is_paid: '',
+          message: '',
+          paid_date: '',
+          payment_method: '',
+          products: [
+            {
+              title: '',
+              id: '',
+              product_id: '',
+              qty: '',
+              product: {},
+            },
+          ],
+          total: '',
+          user: {
+            address: '',
+            email: '',
+            name: '',
+            tel: '',
+          },
+          num: '',
+        },
       ],
       pagination: {
+        current_page: '',
+        has_next: '',
+        has_pre: '',
+        total_pages: '',
       },
       tempProduct: {},
       productComponent: {},
@@ -93,43 +122,10 @@ export default {
       this.$http.get(api)
         .then((res) => {
           this.isLoading = false;
-          console.log(res);
           if (res.data.success) {
-            console.log('取得訂單成功');
-            // this.products = res.data.products;
-            // this.pagination = res.data.pagination;
-            this.products = [
-              {
-                create_at: 1523539834,
-                id: '-L9u2EUkQSoEmW7QzGLF',
-                is_paid: true,
-                message: '這是留言',
-                paid_date: 1523539924,
-                payment_method: 'credit_card',
-                products: {
-                  L8nBrq8Ym4ARI1Kog4t: {
-                    title: '毛巾',
-                    id: 'L8nBrq8Ym4ARI1Kog4t',
-                    product_id: '-L8moRfPlDZZ2e-1ritQ',
-                    qty: '3',
-                  },
-                },
-                total: 100,
-                user: {
-                  address: 'kaohsiung',
-                  email: 'test@gmail.com',
-                  name: 'steven666',
-                  tel: '0912346768',
-                },
-                num: 1,
-              },
-            ];
-            this.pagination = {
-              current_page: 1,
-              has_next: false,
-              has_pre: false,
-              total_pages: 1,
-            };
+            console.log('取得訂單成功', res);
+            this.products = res.data.orders;
+            this.pagination = res.data.pagination;
           } else {
             console.log('取得訂單失敗');
           }
