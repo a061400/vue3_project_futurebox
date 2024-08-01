@@ -70,10 +70,10 @@ export default {
       this.isLoading = true;
       this.$http.get(api).then((res) => {
         if (res.data.success) {
-          console.log('點擊的商品 取得成功', res.data);
+          console.log('用戶端 點擊的商品取得成功', res.data);
           this.product = res.data.product;
         } else {
-          console.log('點擊的商品 取得失敗');
+          console.log('用戶端 點擊的商品取得失敗');
         }
         this.isLoading = false;
       });
@@ -87,9 +87,9 @@ export default {
       this.status.loadingItem = itemId;
       this.$http.post(api, { data: cart }).then((res) => {
         if (res.data.success) {
-          console.log('獨立商品 加入購物車成功', res.data.data);
+          console.log('用戶端 在獨立商品頁面 加入購物車成功', res.data.data);
         } else {
-          console.log('獨立商品 加入購物車失敗');
+          console.log('用戶端 在獨立商品頁面 加入購物車失敗');
         }
         this.status.loadingItem = '';
       });

@@ -162,7 +162,7 @@
           <Field id="email" name="email" type="email" class="form-control"
                    :class="{ 'is-invalid': errors['email'] }"
                    placeholder="請輸入 Email" rules="email|required"
-                   ></Field>
+                   v-model="form.user.email"></Field>
           <ErrorMessage name="email" class="invalid-feedback"></ErrorMessage>
     </div>
     <div class="mb-3">
@@ -170,7 +170,7 @@
           <Field id="name" name="姓名" type="text" class="form-control"
                    :class="{ 'is-invalid': errors['姓名'] }"
                    placeholder="請輸入姓名" rules="required"
-                   ></Field>
+                   v-model="form.user.name"></Field>
           <ErrorMessage name="姓名" class="invalid-feedback"></ErrorMessage>
         </div>
 
@@ -179,7 +179,7 @@
           <Field id="tel" name="電話" type="tel" class="form-control"
                    :class="{ 'is-invalid': errors['電話'] }"
                    placeholder="請輸入電話" rules="required"
-                   ></Field>
+                   v-model="form.user.tel"></Field>
           <ErrorMessage name="電話" class="invalid-feedback"></ErrorMessage>
         </div>
 
@@ -188,14 +188,14 @@
           <Field id="address" name="地址" type="text" class="form-control"
                    :class="{ 'is-invalid': errors['地址'] }"
                    placeholder="請輸入地址" rules="required"
-                  ></Field>
+                   v-model="form.user.address"></Field>
           <ErrorMessage name="地址" class="invalid-feedback"></ErrorMessage>
         </div>
 
         <div class="mb-3">
           <label for="message" class="form-label">留言</label>
           <textarea name="" id="message" class="form-control" cols="30" rows="10"
-                    ></textarea>
+                    v-model="form.message"></textarea>
         </div>
         <div class="text-end">
           <button class="btn btn-danger" :disabled="this.status.loadingItem === 'on'">送出訂單</button>
@@ -216,6 +216,15 @@ export default {
         loadingItem: '',
       },
       cart: [],
+      form: {
+        user: {
+          name: '',
+          email: '',
+          tel: '',
+          address: '',
+        },
+        message: '',
+      },
     };
   },
   created() {
@@ -228,10 +237,10 @@ export default {
       this.isLoading = true;
       this.$http.get(api).then((res) => {
         if (res.data.success) {
-          console.log('客戶商品列表 取得成功', res.data);
+          console.log('用戶端 商品列表取得成功', res.data);
           this.products = res.data.products;
         } else {
-          console.log('客戶商品列表 取得失敗');
+          console.log('用戶端 商品列表取得失敗');
         }
         this.isLoading = false;
       });
@@ -248,10 +257,10 @@ export default {
       this.status.loadingItem = itemId;
       this.$http.post(api, { data: cart }).then((res) => {
         if (res.data.success) {
-          console.log('加入購物車成功', res.data.data);
+          console.log('用戶端 加入購物車成功', res.data.data);
           this.getCarts();
         } else {
-          console.log('加入購物車失敗');
+          console.log('用戶端 加入購物車失敗');
         }
         this.status.loadingItem = '';
       });
@@ -260,10 +269,10 @@ export default {
       const api = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/cart`;
       this.$http.get(api).then((res) => {
         if (res.data.success) {
-          console.log('取得購物車資訊成功', res.data.data);
+          console.log('用戶端 取得購物車資訊成功', res.data.data);
           this.cart = res.data.data;
         } else {
-          console.log('取得購物車資訊失敗');
+          console.log('用戶端 取得購物車資訊失敗');
         }
       });
     },
@@ -276,10 +285,10 @@ export default {
       this.status.loadingItem = item.id;
       this.$http.put(api, { data: cart }).then((res) => {
         if (res.data.success) {
-          console.log('更新購物車資訊成功', res);
+          console.log('用戶端 更新購物車資訊成功', res);
           this.getCarts();
         } else {
-          console.log('更新購物車資訊失敗');
+          console.log('用戶端 更新購物車資訊失敗');
         }
         this.status.loadingItem = '';
       });
@@ -289,10 +298,10 @@ export default {
       this.status.loadingItem = itemId;
       this.$http.delete(api).then((res) => {
         if (res.data.success) {
-          console.log('刪除產品成功');
+          console.log('用戶端 刪除產品成功');
           this.getCarts();
         } else {
-          console.log('刪除產品失敗');
+          console.log('用戶端 刪除產品失敗');
         }
         this.status.loadingItem = '';
       });
@@ -305,10 +314,10 @@ export default {
       this.status.loadingItem = 'on';
       this.$http.post(api, { data: coupon }).then((res) => {
         if (res.data.success) {
-          console.log('加入優惠券成功');
+          console.log('用戶端 加入優惠券成功');
           this.getCarts();
         } else {
-          console.log('加入優惠券失敗');
+          console.log('用戶端 加入優惠券失敗');
         }
         this.status.loadingItem = '';
       });
@@ -319,24 +328,15 @@ export default {
 
     createOrder() {
       const api = `${process.env.VUE_APP_API}api/${process.env.VUE_APP_PATH}/order`;
-      const form = {
-        user: {
-          name: 'test',
-          email: 'test@gmail.com',
-          tel: '0912346768',
-          address: 'taichung',
-        },
-        message: '這是留言',
-      };
       this.status.loadingItem = 'on';
       this.isLoading = true;
-      this.$http.post(api, { data: form }).then((res) => {
+      this.$http.post(api, { data: this.form }).then((res) => {
         this.$httpMessageState(res, '建立訂單');
         if (res.data.success) {
-          console.log('建立訂單成功');
-          this.getCarts();
+          console.log('用戶端 建立訂單成功', res.data);
+          this.$router.push(`./checkout/${res.data.orderId}`);
         } else {
-          console.log('建立訂單失敗');
+          console.log('用戶端 建立訂單失敗');
         }
         this.status.loadingItem = '';
         this.isLoading = false;
