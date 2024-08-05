@@ -78,7 +78,7 @@
               <tr>
                 <th></th>
                 <th>品名</th>
-                <th style="width: 120px">數量</th>
+                <th style="width: 140px">數量</th>
                 <th>單價</th>
               </tr>
             </thead>
@@ -103,7 +103,8 @@
                     <input type="number" class="form-control"
                           v-model.number="item.qty" min="1"
                           @change="updateCart(item)"
-                          :disabled="this.status.loadingItem === item.id">
+                          :disabled="this.status.loadingItem === item.id"
+                          >
                     <div class="input-group-text">/ {{ item.product.unit }}</div>
                   </div>
                 </td>
@@ -137,7 +138,7 @@
           <div class="input-group mb-3 input-group-sm">
             <Field id="coupon" name="優惠碼" type="text" class="form-control"
                    :class="{ 'is-invalid': errors['優惠碼'] }" v-model="coupon_code"
-                   placeholder="請輸入優惠碼" rules="required"
+                   placeholder="請輸入優惠碼" rules="required" style="width:100px"
                   ></Field>
             <ErrorMessage name="優惠碼" class="invalid-feedback"></ErrorMessage>
             <div class="input-group-append">

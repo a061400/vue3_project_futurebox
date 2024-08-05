@@ -95,7 +95,8 @@
               <input class="form-check-input" type="checkbox"
                       :true-value="1"
                       :false-value="0"
-                      id="is_enabled">
+                      id="is_enabled"
+                      v-model="tempProduct.is_enabled">
               <label class="form-check-label" for="is_enabled">
                 是否啟用
               </label>
